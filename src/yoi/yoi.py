@@ -81,3 +81,4 @@ class Yoi(Frame):
             self.close_file(file=file)
         self.open_folder_btn.pack()
         self.open_file_btn.pack()
+

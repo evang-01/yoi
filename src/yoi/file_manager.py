@@ -27,3 +27,4 @@ class FileManager(Folder):
         self.name.pack(ipady=16)
         for el in self.elems:
             el.pack(padx=(0, 0), anchor='w')
+

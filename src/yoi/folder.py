@@ -39,7 +39,7 @@ class Folder(Frame):
         if path == '':
             return
         for elem in listdir(abspath(path)):
-            def iffile(path=elem): return ifisfile(path)
+            def iffile(path=join(path, elem)): return ifisfile(path)
             if isfile(elem):
                 self.elems.append(Button(self, text=elem, font=self.font,
                                          width=self.indent, bg=self.bg, fg=self.fc))
@@ -50,3 +50,4 @@ class Folder(Frame):
                                 fc=self.fc, dc=self.dc)
                 self.elems.append(folder)
         self.display()
+

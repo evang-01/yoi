@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from tkinter import Tk
 from sys import argv
 from yoi import *
@@ -14,3 +15,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

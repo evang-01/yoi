@@ -23,12 +23,12 @@ class Folder(Frame):
 
     def display(self):
         self.name.pack(ipady=0)
+        self.name.config(text=basename(path))
         for el in self.elems:
             el.pack(padx=(self.indent*self.font[1]/2, 0), anchor='w')
 
     def open(self, path='', ifisfile=lambda name: None):
         path = self.path if path == '' else path
-        self.name.config(text=basename(path))
         if isfile(path):
             ifisfile(path)
             return
@@ -49,5 +49,6 @@ class Folder(Frame):
                                 indent=self.indent, font=self.font, bg=self.bg,
                                 fc=self.fc, dc=self.dc)
                 self.elems.append(folder)
+        self.path = path
         self.display()
 

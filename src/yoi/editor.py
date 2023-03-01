@@ -7,17 +7,21 @@ from pygments.token import Token
 
 class Editor(Text):
     def __init__(self, root=None, path='', tags={
-        'Name': '#0f0',
-        'Comment': '#00f',
-        'Keyword': '#f0f',
-        'Literal': '#ff0',
-        'Punctuation': '#f00',
-        'Operator': '#0ff'
+        'builtin': '#0f0',
+        'name': '#fff',
+        'comment': '#00f',
+        'keyword': '#f0f',
+        'literal': '#ff0',
+        'punctuation': '#f00',
+        'operator': '#0ff'
     }, **kwargs):
         super().__init__(root, **kwargs)
         self.path = path
+        self.tags = tags
         for tag, color in tags.items():
-            self.tag_configure(tag, foreground=color, background=dict(**kwargs)['bg'])
+            self.tag_configure(tag, foreground=color, background=kwargs['bg'],
+                               selectforeground='#000' if color == '#fff'\
+                               else '#fff', selectbackground=color)
         self.bind('<KeyRelease>', lambda _: self.save())
         self['state'] = 'disable'
         self.open(path=path)
@@ -34,12 +38,12 @@ class Editor(Text):
         self.save()
 
     def syntax(self):
-        tokensource = PythonLexer().get_tokens(self.code)
+        tokens = PythonLexer().get_tokens(self.code)
         sl = 1
         sr = 0
         el = 1
         er = 0
-        for tag, val in tokensource:
+        for tag, val in tokens:
             if "\n" in val:
                 el += val.count("\n")
                 er = len(val.rsplit("\n",1)[1])
@@ -50,7 +54,12 @@ class Editor(Text):
                 end = f"{el}.{er}"
                 for old in self.tag_names():
                     self.tag_remove(old, begin, end)
-                self.tag_add(str(tag)[6:], begin, end)
+                for newtag in self.tags:
+                    tag = str(tag).replace('Token.', '').lower().\
+                            replace('.', ' ')
+                    if newtag in tag:
+                        tag = newtag
+                self.tag_add(tag, begin, end)
             sl = el
             sr = er
 

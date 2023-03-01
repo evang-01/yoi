@@ -23,7 +23,7 @@ class FileManager(Folder):
         self.dc = dc
 
     def display(self):
-        self.name.config(text=self.name['text'].upper())
+        self.name.config(text=basename(self.path).upper())
         self.name.pack(ipady=16)
         for el in self.elems:
             el.pack(padx=(0, 0), anchor='w')

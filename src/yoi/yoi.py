@@ -7,7 +7,7 @@ from os.path import basename, isfile
 
 
 class Yoi(Frame):
-    def __init__(self, root, path='', bg='#000', fg='#fff', dc='#f0f', fc='#0f0',
+    def __init__(self, root, path='', bg='#000', fg='#fff', dc='#f0f', fc='#0f0', fw=32,
                  oc='#0ff', sg='#00f', font=('Courier', 12, 'bold'), indent=16, tabs=4):
         super().__init__(root)
         self.bg = bg
@@ -16,6 +16,7 @@ class Yoi(Frame):
         self.config(bg=bg)
 
         self.file_manager = FileManager(self, bg=bg, oc=oc, font=font,
+                                        width=fw,
                                         fc=fc, dc=dc, indent=indent)
         self.open_folder_btn = Button(self.file_manager, bg=bg, fg=dc,
                                       font=font, text='OPEN FOLDER',
@@ -27,14 +28,17 @@ class Yoi(Frame):
         self.files = Frame(self, bg=bg)
         self.files.pack(fill='x', side='top')
 
+        self.scrolly = Scrollbar(self)
         self.editor = Editor(self, path='', bg=bg, insertbackground=fg,
                              tabs=Font(font=font).measure(' '*tabs),
-                             selectbackground=sg, fg=fg, font=font)
+                             selectbackground=sg, fg=fg, font=font,
+                             yscrollcommand=self.scrolly.set)
         self.open_file_btn = Button(self.editor, bg=bg, fg=fc,
                                     font=font, text='OPEN FILE',
                                     command=lambda: self.open_file(use_path=True))
         self.open_file_btn.pack()
         self.editor.pack(fill='both', side='right', expand=1)
+        self.scrolly.pack(fill='y', side='right')
 
         if isfile(path) and path != '':
             self.open_file(path=path)
@@ -73,6 +77,8 @@ class Yoi(Frame):
             if self.opened != {} else ''
         if self.opened == {}:
             self.open_file_btn.pack()
+            self.editor.open('')
+            self.editor['state'] = 'disabled'
         self.editor.open(last)
 
     def close_folder(self):

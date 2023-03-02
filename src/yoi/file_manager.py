@@ -7,7 +7,7 @@ from os.path import basename
 class FileManager(Folder):
     def __init__(self, root, path='', ifisfile=lambda name: None,
                  bg='#000', dc='#f0f', fc='#0f0', oc='#0ff',
-                 indent=32, font=('Courier', 4, 'bold')):
+                 width=32, indent=128, font=('Courier', 4, 'bold')):
         super().__init__(root)
         self.path = path
         self.open(path=path, ifisfile=ifisfile)
@@ -16,6 +16,7 @@ class FileManager(Folder):
                           font=font, width=indent, bg=bg, fg=oc)
         self.elems = []
 
+        self.width = width
         self.indent = indent
         self.font = font
         self.bg = bg

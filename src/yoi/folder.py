@@ -4,14 +4,19 @@ from os.path import isfile, join, abspath, basename
 
 
 class Folder(Frame):
-    def __init__(self, root, path='', ifisfile=lambda name: None,
-                 bg='#000', dc='#f0f', fc='#0f0', oc='#0ff',
-                 width=32, indent=128, font=('Courier', 4, 'bold')):
+    def __init__(self, root, path='', ifisfile=lambda name: None, bg='#000', dc='#f0f',
+                 fc='#0f0', oc='#0ff', width=32, indent=128, font=('Courier', 4, 'bold')):
         super().__init__(root, bg=bg)
         self.path = path
-        self.name = Button(self, text=basename(path), width=width, font=font,
-                           bg=bg, fg=fc if isfile(path) else dc,
-                           command=lambda: self.open(ifisfile=ifisfile))
+        self.name = Button(
+            self,
+            text=basename(path),
+            width=width,
+            font=font,
+            bg=bg,
+            fg=fc if isfile(path) else dc,
+            command=lambda: self.open(
+                ifisfile=ifisfile))
         self.name.pack(anchor='w')
         self.elems = []
 
@@ -42,14 +47,28 @@ class Folder(Frame):
         for elem in listdir(abspath(path)):
             def iffile(path=join(path, elem)): return ifisfile(path)
             if isfile(elem):
-                self.elems.append(Button(self, text=elem, font=self.font,
-                                         width=self.width, bg=self.bg, fg=self.fc))
+                self.elems.append(
+                    Button(
+                        self,
+                        text=elem,
+                        font=self.font,
+                        width=self.width,
+                        bg=self.bg,
+                        fg=self.fc))
                 self.elems[-1]['command'] = iffile
             else:
-                folder = Folder(self, path=join(path, elem), ifisfile=iffile,
-                                width=self.width, indent=self.indent, font=self.font, bg=self.bg,
-                                fc=self.fc, dc=self.dc)
+                folder = Folder(
+                    self,
+                    path=join(
+                        path,
+                        elem),
+                    ifisfile=iffile,
+                    width=self.width,
+                    indent=self.indent,
+                    font=self.font,
+                    bg=self.bg,
+                    fc=self.fc,
+                    dc=self.dc)
                 self.elems.append(folder)
         self.path = path
         self.display()
-

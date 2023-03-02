@@ -5,15 +5,19 @@ from os.path import basename
 
 
 class FileManager(Folder):
-    def __init__(self, root, path='', ifisfile=lambda name: None,
-                 bg='#000', dc='#f0f', fc='#0f0', oc='#0ff',
-                 width=32, indent=128, font=('Courier', 4, 'bold')):
+    def __init__(self, root, path='', ifisfile=lambda name: None, bg='#000', dc='#f0f',
+                 fc='#0f0', oc='#0ff', width=32, indent=128, font=('Courier', 4, 'bold')):
         super().__init__(root)
         self.path = path
         self.open(path=path, ifisfile=ifisfile)
         self.name.destroy()
-        self.name = Label(self, text=basename(path).upper(),
-                          font=font, width=indent, bg=bg, fg=oc)
+        self.name = Label(
+            self,
+            text=basename(path).upper(),
+            font=font,
+            width=indent,
+            bg=bg,
+            fg=oc)
         self.elems = []
 
         self.width = width
@@ -28,4 +32,3 @@ class FileManager(Folder):
         self.name.pack(ipady=16)
         for el in self.elems:
             el.pack(padx=(0, 0), anchor='w')
-

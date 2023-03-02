@@ -20,8 +20,11 @@ class Editor(Text):
         self.tags = tags
         self.lexer = lexer
         for tag, color in tags.items():
-            self.tag_configure(tag, foreground=color, selectforeground=kwargs['fg'] if color ==
-                               kwargs['selectbackground'] else color, selectbackground=kwargs['selectbackground'])
+            self.tag_configure(
+                tag,
+                foreground=color,
+                selectforeground=kwargs['fg'] if color == kwargs['selectbackground'] else color,
+                selectbackground=kwargs['selectbackground'])
         self.bind('<KeyRelease>', lambda _: self.save())
         self['state'] = 'disable'
         self.open(path=path)
@@ -55,8 +58,13 @@ class Editor(Text):
                 for old in self.tag_names():
                     self.tag_remove(old, begin, end)
                 for newtag in self.tags:
-                    tag = str(tag).replace('Token.', '').lower().\
-                        replace('.', ' ').replace('namespace', 'library')
+                    tag = str(tag).replace(
+                        'Token.',
+                        '').lower().replace(
+                        '.',
+                        ' ').replace(
+                        'namespace',
+                        'library')
                     if newtag in tag or tag in newtag:
                         tag = newtag
                 self.tag_add(tag, begin, end)
@@ -66,7 +74,7 @@ class Editor(Text):
     def save(self):
         if self.path != '':
             with open(self.path, 'w') as file:
-                file.write(self.code)
+                file.write(self.code[:-1])
         self.syntax()
 
     @property
@@ -80,5 +88,4 @@ class Editor(Text):
                 code = code[:-1]
         code += '\n'
         self.delete('1.0', 'end')
-        self.insert('1.0', code if code != None else '')
-
+        self.insert('1.0', code if code is not None else '')

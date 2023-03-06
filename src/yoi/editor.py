@@ -8,7 +8,8 @@ from pygments.token import Token
 class Editor(Text):
     def __init__(self, root=None, path='', tags={
         'builtin': '#0f0',
-        'name': '#fff',
+        'class': '#0f0',
+        'function': '#0ff',
         'comment': '#00f',
         'keyword': '#f0f',
         'literal': '#ff0',
@@ -57,16 +58,14 @@ class Editor(Text):
                 end = f"{el}.{er}"
                 for old in self.tag_names():
                     self.tag_remove(old, begin, end)
+                mi = 0
+                tag = str(tag).replace('Token.', '').lower().split('.')
                 for newtag in self.tags:
-                    tag = str(tag).replace(
-                        'Token.',
-                        '').lower().replace(
-                        '.',
-                        ' ').replace(
-                        'namespace',
-                        'library')
-                    if newtag in tag or tag in newtag:
-                        tag = newtag
+                    if newtag in tag:
+                        i = tag.index(newtag)
+                        if i > mi:
+                            mi = i
+                tag = tag[mi]
                 self.tag_add(tag, begin, end)
             sl = el
             sr = er

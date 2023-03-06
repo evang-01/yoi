@@ -49,6 +49,8 @@ class Yoi(Frame):
                 font=font).measure(
                 ' ' * tabs),
             selectbackground=sg,
+            selectforeground=fg,
+            inactiveselectbackground=sg,
             fg=fg,
             font=font,
             yscrollcommand=self.scrolly.set)

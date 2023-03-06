@@ -15,7 +15,7 @@ class FileManager(Folder):
             self,
             text=basename(path).upper(),
             font=font,
-            width=indent,
+            width=width,
             bg=bg,
             fg=oc)
         self.elems = []

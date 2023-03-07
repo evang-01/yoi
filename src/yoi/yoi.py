@@ -7,8 +7,16 @@ from os.path import basename, isfile
 
 
 class Yoi(Frame):
-    def __init__(self, root, path='', bg='#000', fg='#fff', dc='#f0f', fc='#0f0',
-                 fw=32, oc='#0ff', sg='#00f', font=('Courier', 12, 'bold'), indent=16, tabs=4):
+    def __init__(self, root, path='', bg='#000', fg='#fff', dc='#f0f', fc='#0f0', tags={
+        'builtin': '#0f0',
+        'class': '#0f0',
+        'function': '#0f0',
+        'comment': '#00f',
+        'keyword': '#f0f',
+        'literal': '#ff0',
+        'punctuation': '#f00',
+        'operator': '#0ff'
+    }, fw=32, oc='#0ff', sg='#00f', font=('Courier', 12, 'bold'), indent=16, tabs=4):
         super().__init__(root)
         self.sg = sg
         self.bg = bg
@@ -39,10 +47,11 @@ class Yoi(Frame):
         self.files = Frame(self, bg=bg)
         self.files.pack(fill='x', side='top')
 
-        self.scrolly = Scrollbar(self)
+        self.scrolly = Scrollbar(self, orient='vertical')
         self.editor = Editor(
             self,
             path='',
+            tags=tags,
             bg=bg,
             insertbackground=fg,
             tabs=Font(
@@ -64,6 +73,7 @@ class Yoi(Frame):
                 use_path=True))
         self.open_file_btn.pack()
         self.editor.pack(fill='both', side='right', expand=1)
+        self.scrolly.config(command=self.editor.yview)
         self.scrolly.pack(fill='y', side='right')
 
         if isfile(path) and path != '':

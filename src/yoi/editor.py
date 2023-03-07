@@ -2,14 +2,13 @@ from tkinter import Text
 from os.path import basename
 from pygments import lex
 from pygments.lexers import *
-from pygments.token import Token
 
 
 class Editor(Text):
     def __init__(self, root=None, path='', tags={
         'builtin': '#0f0',
         'class': '#0f0',
-        'function': '#0ff',
+        'function': '#0f0',
         'comment': '#00f',
         'keyword': '#f0f',
         'literal': '#ff0',
@@ -26,7 +25,7 @@ class Editor(Text):
                 foreground=color,
                 selectforeground=kwargs['fg'] if color == kwargs['selectbackground'] else color,
                 selectbackground=kwargs['selectbackground'])
-        self.bind('<KeyRelease>', lambda _: self.save())
+        self.bind('<KeyRelease>', lambda key: self.save(key))
         self['state'] = 'disable'
         self.open(path=path)
 
@@ -40,6 +39,12 @@ class Editor(Text):
             with open(path, 'r') as file:
                 self.code = file.read()
         self.save()
+
+    def save(self, key=None):
+        if self.path != '':
+            with open(self.path, 'w') as file:
+                file.write(self.code[:-1])
+        self.syntax()
 
     def syntax(self):
         tokens = self.lexer.get_tokens(self.code)
@@ -69,12 +74,6 @@ class Editor(Text):
                 self.tag_add(tag, begin, end)
             sl = el
             sr = er
-
-    def save(self):
-        if self.path != '':
-            with open(self.path, 'w') as file:
-                file.write(self.code[:-1])
-        self.syntax()
 
     @property
     def code(self):

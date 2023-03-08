@@ -1,6 +1,5 @@
 from tkinter import Text
 from os.path import basename
-from pygments import lex
 from pygments.lexers import *
 
 
@@ -49,7 +48,6 @@ class Editor(Text):
 
     def undo(self, *args):
         if self.hist_index > 0:
-            print('UNDO')
             self.hist_index -= 1
             self.code = self.history[self.hist_index]
         self.syntax()
@@ -57,7 +55,6 @@ class Editor(Text):
 
     def redo(self, *args):
         if self.hist_index < len(self.history) - 1:
-            print('REDO')
             self.hist_index += 1
             self.code = self.history[self.hist_index]
         self.syntax()
@@ -75,9 +72,6 @@ class Editor(Text):
                     self.hist_index = len(self.history) - 1
             self.history.append(self.code)
             self.hist_index += 1
-            print('='*64)
-            print(self.hist_index)
-            print(self.history)
 
     def syntax(self):
         tokens = self.lexer.get_tokens(self.code)

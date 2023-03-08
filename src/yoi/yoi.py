@@ -47,7 +47,7 @@ class Yoi(Frame):
         self.files = Frame(self, bg=bg)
         self.files.pack(fill='x', side='top')
 
-        self.scrolly = Scrollbar(self, orient='vertical')
+        self.scrolly = Scrollbar(self, orient='vertical', bg=oc, activebackground=fc, troughcolor=bg)
         self.editor = Editor(
             self,
             path='',

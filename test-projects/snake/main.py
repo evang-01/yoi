@@ -3,6 +3,7 @@ from sys import argv
 import curses
 from curses import wrapper
 
+
 def main(stdscr):
     stdscr.nodelay(True)
     snake = [tuple(int(i/2) for i in stdscr.getmaxyx())]
@@ -20,4 +21,3 @@ def main(stdscr):
 
 
 wrapper(main)
-

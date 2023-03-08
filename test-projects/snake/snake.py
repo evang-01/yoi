@@ -2,22 +2,33 @@
 from sys import argv
 import curses
 from curses import wrapper
+from random import randint
+
 
 def main(stdscr):
     stdscr.nodelay(True)
-    snake = [tuple(int(i/2) for i in stdscr.getmaxyx())]
+    y, x = stdscr.getmaxyx()
+    snake = [[int(y/2), int(x/2)]]
+    apple = [randint(1, y), randint(1, x)]
+    dir = [0, 0]
     while True:
-        for part in snake:
-            stdscr.addstr(*part, '#')
+        stdscr.clear()
         c = stdscr.getch()
         if c == ord('a'):
-            break
+            dir[0] = -1
         elif c == ord('s'):
-            break
+            dir[1] = -1
         elif c == ord('w'):
-            break
+            dir[1] = 1
         elif c == ord('d'):
+            dir[0] = 1
+        elif c == ord(' '):
             break
+        snake[0][0] += dir[0]
+        snake[0][1] += dir[1]
+        for part in snake:
+            stdscr.addstr(*part, '#')
+        stdscr.addstr(*apple, '@')
     stdscr.nodelay(False)
     pos = list(int(i/2) for i in stdscr.getmaxyx())
     pos[1] -= 5

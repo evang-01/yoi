@@ -19,13 +19,17 @@ class Editor(Text):
         self.path = path
         self.tags = tags
         self.lexer = lexer
+        self.history = ['']
+        self.hist_index = 0
         for tag, color in tags.items():
             self.tag_configure(
                 tag,
                 foreground=color,
                 selectforeground=kwargs['fg'] if color == kwargs['selectbackground'] else color,
                 selectbackground=kwargs['selectbackground'])
-        self.bind('<KeyRelease>', lambda key: self.save(key))
+        self.bind('<KeyRelease>', self.save)
+        self.bind('<Control-z>', self.undo)
+        self.bind('<Control-y>', self.redo)
         self['state'] = 'disable'
         self.open(path=path)
 
@@ -38,13 +42,42 @@ class Editor(Text):
             self['state'] = 'normal'
             with open(path, 'r') as file:
                 self.code = file.read()
+        self.history = [self.code]
+        self.hist_index = 0
+        self.syntax()
         self.save()
 
-    def save(self, key=None):
+    def undo(self, *args):
+        if self.hist_index > 0:
+            print('UNDO')
+            self.hist_index -= 1
+            self.code = self.history[self.hist_index]
+        self.syntax()
+        self.save()
+
+    def redo(self, *args):
+        if self.hist_index < len(self.history) - 1:
+            print('REDO')
+            self.hist_index += 1
+            self.code = self.history[self.hist_index]
+        self.syntax()
+        self.save()
+
+    def save(self, *args):
         if self.path != '':
             with open(self.path, 'w') as file:
                 file.write(self.code[:-1])
-        self.syntax()
+        if self.code != self.history[self.hist_index]:
+            self.syntax()
+            if self.hist_index < len(self.history) - 1:
+                if self.code != self.history[self.hist_index+1]:
+                    del self.history[self.hist_index+1:]
+                    self.hist_index = len(self.history) - 1
+            self.history.append(self.code)
+            self.hist_index += 1
+            print('='*64)
+            print(self.hist_index)
+            print(self.history)
 
     def syntax(self):
         tokens = self.lexer.get_tokens(self.code)
@@ -86,4 +119,4 @@ class Editor(Text):
                 code = code[:-1]
         code += '\n'
         self.delete('1.0', 'end')
-        self.insert('1.0', code if code is not None else '')
+        self.insert('1.0', code)

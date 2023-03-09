@@ -35,5 +35,4 @@ def main(stdscr):
     stdscr.addstr(*pos, 'GAME OVER!')
     stdscr.getch()
 
-
 wrapper(main)

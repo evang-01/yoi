@@ -1,5 +1,5 @@
 from tkinter import Text
-from os.path import basename
+from pygments.lexers import PythonLexer
 from pygments.lexers import *
 
 
@@ -21,11 +21,8 @@ class Editor(Text):
         self.history = ['']
         self.hist_index = 0
         for tag, color in tags.items():
-            self.tag_configure(
-                tag,
-                foreground=color,
-                selectforeground=kwargs['fg'] if color == kwargs['selectbackground'] else color,
-                selectbackground=kwargs['selectbackground'])
+            self.tag_configure(tag, foreground=color, selectforeground=kwargs['fg'] if color ==
+                               kwargs['selectbackground'] else color, selectbackground=kwargs['selectbackground'])
         self.bind('<KeyRelease>', self.save)
         self.bind('<Control-z>', self.undo)
         self.bind('<Control-y>', self.redo)
@@ -111,6 +108,5 @@ class Editor(Text):
         if code != '':
             while code[-1] == '\n':
                 code = code[:-1]
-        code += '\n'
         self.delete('1.0', 'end')
         self.insert('1.0', code)

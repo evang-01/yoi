@@ -1,1 +1,1 @@
-print('Hello World!')
+from sys import argv; print(argv[1:])

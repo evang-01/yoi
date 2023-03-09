@@ -2,9 +2,7 @@ from os.path import isfile
 from tkinter import Frame, Scrollbar, Button
 from tkinter.filedialog import askopenfilename, askdirectory
 from tkinter.font import Font
-from yoi.editor import Editor
-from yoi.file_manager import FileManager
-from yoi.file_list import FileList
+from yoi import *
 
 
 class Yoi(Frame):
@@ -17,7 +15,7 @@ class Yoi(Frame):
             'literal': '#ff0',
             'punctuation': '#f00',
             'operator': '#0ff'
-    }, fw=32, oc='#0ff', sg='#00f', font=('Courier', 12, 'bold'), indent=16, tabs=4):
+    }, fw=32, oc='#0ff', sg='#00f', ac='#0f0', font=('Courier', 12, 'bold'), indent=16, tabs=4):
         super().__init__(root)
         self.sg = sg
         self.bg = bg
@@ -32,19 +30,32 @@ class Yoi(Frame):
         self.open_folder_btn.pack()
 
         self.scrolly = Scrollbar(
-            self, orient='vertical', bg=oc, activebackground=fc, troughcolor=bg)
+            self, orient='vertical', bg=ac, activebackground=fg, troughcolor=bg)
         self.editor = Editor(self, path='', tags=tags, bg=bg, insertbackground=fg, tabs=Font(font=font).measure(
-            ' ' * tabs), selectbackground=sg, selectforeground=fg, inactiveselectbackground=sg, fg=fg, font=font, yscrollcommand=self.scrolly.set)
+            ' ' * tabs), selectbackground=sg, selectforeground=fg, inactiveselectbackground=sg, fg=fg, font=font)
         self.open_file_btn = Button(self.editor, bg=bg, fg=fc, font=font,
                                     text='OPEN FILE', command=lambda: self.open_file(use_path=True))
         self.file_list = FileList(
             self, editor=self.editor, button=self.open_file_btn, bg=bg, oc=oc, font=font)
-        self.scrolly.config(command=self.editor.yview)
+        self.num_line = NumLine(self, editor=self.editor, bg=bg, fg=fg, font=font)
+
+        def yview(*args):
+            self.editor.yview(*args)
+            self.num_line.yview(*args)
+        self.scrolly.config(command=yview)
+
+        def set(*args, nl=True):
+            if not nl:
+                yview('moveto', args[0])
+            self.scrolly.set(*args)
+        self.num_line.config(yscrollcommand=set)
+        self.editor.config(yscrollcommand=lambda *args: set(*args, nl=False))
 
         self.file_manager.pack(fill='y', side='left')
         self.file_list.pack(fill='x', side='top')
         self.editor.pack(fill='both', side='right', expand=1)
         self.scrolly.pack(fill='y', side='right')
+        self.num_line.pack(fill='y', side='right')
         self.open_file_btn.pack()
 
         if isfile(path) and path != '':

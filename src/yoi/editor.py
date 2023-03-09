@@ -20,6 +20,7 @@ class Editor(Text):
         self.lexer = lexer
         self.history = ['']
         self.hist_index = 0
+        self.on_save = lambda: None
         for tag, color in tags.items():
             self.tag_configure(tag, foreground=color, selectforeground=kwargs['fg'] if color ==
                                kwargs['selectbackground'] else color, selectbackground=kwargs['selectbackground'])
@@ -40,6 +41,7 @@ class Editor(Text):
                 self.code = file.read()
         self.history = [self.code]
         self.hist_index = 0
+        self.on_save()
         self.syntax()
         self.save()
 
@@ -47,6 +49,7 @@ class Editor(Text):
         if self.hist_index > 0:
             self.hist_index -= 1
             self.code = self.history[self.hist_index]
+        self.on_save()
         self.syntax()
         self.save()
 
@@ -54,6 +57,7 @@ class Editor(Text):
         if self.hist_index < len(self.history) - 1:
             self.hist_index += 1
             self.code = self.history[self.hist_index]
+        self.on_save()
         self.syntax()
         self.save()
 
@@ -62,6 +66,7 @@ class Editor(Text):
             with open(self.path, 'w') as file:
                 file.write(self.code[:-1])
         if self.code != self.history[self.hist_index]:
+            self.on_save()
             self.syntax()
             if self.hist_index < len(self.history) - 1:
                 if self.code != self.history[self.hist_index+1]:

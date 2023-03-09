@@ -4,6 +4,7 @@ dc = '#f0f'
 fc = '#0f0'
 oc = '#0ff'
 sg = '#00f'
+ac = '#0f0'
 font = ('Courier', 16, 'bold')
 fw = 16
 indent = 64

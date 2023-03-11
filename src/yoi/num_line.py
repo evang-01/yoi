@@ -7,6 +7,7 @@ class NumLine(Text):
         super().__init__(root, bg=bg, fg=fg, font=font)
         self.editor = editor
         self.editor.on_save = self.numerate
+        self.tag_configure('right', justify='right')
         self.numerate()
 
     def numerate(self, *args):
@@ -14,7 +15,8 @@ class NumLine(Text):
         self.delete('1.0', 'end')
         lines = self.editor.code.count('\n')
         text = '\n'.join([str(i) for i in range(1, lines + 1)])
-        self.insert('1.0', text)
+        self.insert('1.0', text, 'right')
         self['width'] = len(str(lines))
         self['state'] = 'disable'
-        self.yview('moveto', self.editor.yview()[0])
+        yview = self.editor.yview()
+        self.yview('moveto', yview[0]/yview[1])

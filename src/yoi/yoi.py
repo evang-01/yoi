@@ -1,4 +1,5 @@
-from os.path import isfile
+from os import system
+from os.path import isfile, isdir, basename, abspath
 from tkinter import Frame, Scrollbar, Button
 from tkinter.filedialog import askopenfilename, askdirectory
 from tkinter.font import Font
@@ -53,15 +54,25 @@ class Yoi(Frame):
 
         self.file_manager.pack(fill='y', side='left')
         self.file_list.pack(fill='x', side='top')
+        self.scrolly.pack(fill='y', side='left')
         self.editor.pack(fill='both', side='right', expand=1)
-        self.scrolly.pack(fill='y', side='right')
         self.num_line.pack(fill='y', side='right')
         self.open_file_btn.pack()
 
-        if isfile(path) and path != '':
-            self.open_file(path=path)
-        elif path != '':
-            self.open_folder(path=path)
+        if path == '':
+            return
+
+        if isfile(path):
+            self.open_file(path)
+        elif isdir(path):
+            self.open_folder(path)
+        else:
+            if '.' in basename(path):
+                system(f'touch {abspath(path)}')
+                self.open_file(path)
+            else:
+                system(f'mkdir {abspath(path)}')
+                self.open_folder(path)
 
     def open_file(self, path='', use_path=False):
         file = askopenfilename() if path == '' else path

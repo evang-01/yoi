@@ -48,7 +48,7 @@ class Editor(Text):
     def undo(self, *args):
         if self.hist_index > 0:
             self.hist_index -= 1
-            self.code = self.history[self.hist_index]
+            self.code = self.history[self.hist_index][:-1]
         self.on_save()
         self.syntax()
         self.save()
@@ -56,7 +56,7 @@ class Editor(Text):
     def redo(self, *args):
         if self.hist_index < len(self.history) - 1:
             self.hist_index += 1
-            self.code = self.history[self.hist_index]
+            self.code = self.history[self.hist_index][:-1]
         self.on_save()
         self.syntax()
         self.save()
@@ -110,8 +110,5 @@ class Editor(Text):
 
     @code.setter
     def code(self, code=''):
-        if code != '':
-            while code[-1] == '\n':
-                code = code[:-1]
         self.delete('1.0', 'end')
         self.insert('1.0', code)

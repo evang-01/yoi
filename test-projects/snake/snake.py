@@ -4,7 +4,7 @@ import curses
 from curses import wrapper
 from random import randint
 
-
+@wrapper
 def main(stdscr):
     stdscr.nodelay(True)
     y, x = stdscr.getmaxyx()
@@ -34,5 +34,3 @@ def main(stdscr):
     pos[1] -= 5
     stdscr.addstr(*pos, 'GAME OVER!')
     stdscr.getch()
-
-wrapper(main)

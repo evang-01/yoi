@@ -7,7 +7,7 @@ from yoi import *
 
 
 class Yoi(Frame):
-    def __init__(self, root, path='', bg='#000', fg='#fff', dc='#f0f', fc='#0f0', tags={
+    def __init__(self, root, path='', bg='#000', fg='#fff', dc='#f0f', fc='#0f0', width=1560, height=720, tags={
             'builtin': '#0f0',
             'class': '#0f0',
             'function': '#0f0',
@@ -17,7 +17,7 @@ class Yoi(Frame):
             'punctuation': '#f00',
             'operator': '#0ff'
     }, fw=32, oc='#0ff', sg='#00f', ac='#0f0', font=('Courier', 12, 'bold'), indent=16, tabs=4):
-        super().__init__(root)
+        super().__init__(root, width=width, height=height)
         self.sg = sg
         self.bg = bg
         self.oc = oc

@@ -1,3 +1,5 @@
+width = 1560
+height = 720
 bg = '#000'
 fg = '#fff'
 dc = '#f0f'
@@ -11,11 +13,13 @@ indent = 64
 tabs = 4
 tags = {
     'builtin': '#0f0',
-    'class': '#0f0',
-    'function': '#0f0',
+    'class': '#ff0',
+    'function': '#ff0',
+    'decorator': '#ff0',
     'comment': '#00f',
     'keyword': '#f0f',
-    'literal': '#ff0',
+    'string': '#0f0',
+    'number': '#ff0',
     'punctuation': '#f00',
     'operator': '#0ff'
 }

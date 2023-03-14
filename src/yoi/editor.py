@@ -41,27 +41,46 @@ class Editor(Text):
                 self.code = file.read()
         self.history = [self.code]
         self.hist_index = 0
-        self.on_save()
-        self.syntax()
+        self.change()
         self.save()
 
     def undo(self, *args):
         if self.hist_index > 0:
             self.hist_index -= 1
             self.code = self.history[self.hist_index][:-1]
-        self.on_save()
-        self.syntax()
+        self.change()
         self.save()
 
     def redo(self, *args):
         if self.hist_index < len(self.history) - 1:
             self.hist_index += 1
             self.code = self.history[self.hist_index][:-1]
-        self.on_save()
-        self.syntax()
+        self.change()
         self.save()
 
+    def tokens(self):
+        return [(' '.join(str(t).lower().split('.')[1:]), v) for t, v in self.lexer.get_tokens(self.code)]
+
+    def get_cursor(self, str_pos=False):
+        y, x = [int(i) for i in self.index('insert').split('.')]
+        l = sum([len(l) for l in self.code[:-1].split('\n')][:x-1])
+        print(l)
+        if str_pos:
+            return l + x
+        else:
+            return y, x
+
+    @classmethod
+    def bind_change(self, func):
+        self.on_change = func
+
+    def change(self):
+        self.on_change()
+        self.on_save()
+        self.syntax()
+
     def save(self, *args):
+        self.on_change()
         if self.path != '':
             with open(self.path, 'w') as file:
                 file.write(self.code[:-1])
@@ -76,7 +95,7 @@ class Editor(Text):
             self.hist_index += 1
 
     def syntax(self):
-        tokens = self.lexer.get_tokens(self.code)
+        tokens = self.tokens()
         sl = 1
         sr = 0
         el = 1
@@ -93,13 +112,13 @@ class Editor(Text):
                 for old in self.tag_names():
                     self.tag_remove(old, begin, end)
                 mi = 0
-                tag = str(tag).replace('Token.', '').lower().split('.')
+                subtags = tag.split()
                 for newtag in self.tags:
-                    if newtag in tag:
-                        i = tag.index(newtag)
+                    if newtag in subtags:
+                        i = subtags.index(newtag)
                         if i > mi:
                             mi = i
-                tag = tag[mi]
+                tag = subtags[mi]
                 self.tag_add(tag, begin, end)
             sl = el
             sr = er
